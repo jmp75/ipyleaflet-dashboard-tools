@@ -1,5 +1,4 @@
 from typing import Any, Callable, Dict, Tuple
-from IPython.core.display import display
 import xarray as xr
 
 import matplotlib.pyplot as plt
@@ -64,7 +63,7 @@ class GeoViewer:
         markers = []
         for k in self.marker_info:
             message = self.create_popup(k)
-            marker = Marker(location=k)
+            marker = Marker(location=k, draggable=False)
             marker.on_click(click_handler)
             marker.popup = message
             markers.append(marker)

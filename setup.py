@@ -1,58 +1,143 @@
 #!/usr/bin/env python
 
-"""The setup script."""
+"""A package with a geo-viewer for geolocated point information e.g. in a netCDF file
+
+See:
+https://github.com/jmp75/ipyleaflet-dashboard-tools
+"""
+
+from setuptools import find_packages, setup
+import re
+# To use a consistent encoding
+from codecs import open
+import os
+
+# TODO: credit original template setup from ???
+
+here = os.path.abspath(os.path.dirname(__file__))
+
+verstr = 'unknown'
+VERSIONFILE = "ipyleaflet_dashboard_tools/_version.py"
+with open(VERSIONFILE, "r")as f:
+    verstrline = f.read().strip()
+    pattern = re.compile(r"__version__ = ['\"](.*)['\"]")
+    mo = pattern.search(verstrline)
+if mo:
+    verstr = mo.group(1)
+else:
+    raise RuntimeError("Unable to find version string in %s." % (VERSIONFILE,))
+
+
+# try:
+#     import pypandoc
+#     long_description = pypandoc.convert('README.md', 'rst')
+#     long_description = long_description.replace("\r","") # Do not forget this line
+#     long_description_content_type='text/markdown'
+# except:
+#     print("Pandoc not found. Long_description conversion failure.")
+#     # Get the long description from the README file
+#     with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+#         long_description = f.read()
+#         long_description_content_type='text/markdown'
+
+with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+    long_description_content_type='text/markdown'
 
 import io
-from os import path as op
-from setuptools import setup, find_packages
-
-with open('README.md') as readme_file:
-    readme = readme_file.read()
-
-here = op.abspath(op.dirname(__file__))
 
 # get the dependencies and installs
-with io.open(op.join(here, "requirements.txt"), encoding="utf-8") as f:
+with io.open(os.path.join(here, "requirements.txt"), encoding="utf-8") as f:
     all_reqs = f.read().split("\n")
 
 install_requires = [x.strip() for x in all_reqs if "git+" not in x]
 dependency_links = [x.strip().replace("git+", "") for x in all_reqs if "git+" not in x]
 
-requirements = [ ]
+REQUIREMENTS = install_requires
 
-setup_requirements = [ ]
+TEST_REQUIREMENTS = ['pytest',
+                    #  'coveralls',
+                    #  'pytest-cov',
+                    #  'pytest-mpl'
+                     ]
 
-test_requirements = [ ]
+CLASSIFIERS = ['Development Status :: 3 - Alpha',
+                'Intended Audience :: Developers',
+                'Topic :: Software Development ',
+                'License :: OSI Approved :: MIT License',
+                'Operating System :: OS Independent',
+                'Natural Language :: English',
+                'Programming Language :: Python',
+                'Programming Language :: Python :: 3'
+                ]
+# Arguments marked as "Required" below must be included for upload to PyPI.
+# Fields marked as "Optional" may be commented out.
 
 setup(
-    author="Jean-Michel Perraud",
-    author_email='jean-michel.perraud@csiro.au',
-    python_requires='>=3.5',
-    classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
-        'Natural Language :: English',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-    ],
-    description="Experimental reusable componentry for ipywidgets.",
-    install_requires=install_requires,
-    dependency_links=dependency_links,
-    license="BSD license",
-    long_description=readme,
-    long_description_content_type='text/markdown',
-    include_package_data=True,
-    keywords='ipyleaflet_dashboard_tools',
     name='ipyleaflet_dashboard_tools',
+    version=verstr,
+    description="Experimental reusable componentry for ipywidgets.",
+    long_description=long_description,
+    long_description_content_type=long_description_content_type,
+    url='https://github.com/jmp75/ipyleaflet-dashboard-tools',
+    author='Jean-Michel Perraud',
+    author_email='per202@csiro.au',
+    classifiers=CLASSIFIERS,
+    python_requires='>=3.5',
+    keywords='interop python native-libraries reference-counting handle cffi',
     packages=find_packages(include=['ipyleaflet_dashboard_tools', 'ipyleaflet_dashboard_tools.*']),
-    setup_requires=setup_requirements,
-    test_suite='tests',
-    tests_require=test_requirements,
-    url='https://github.com/jmp75/ipyleaflet_dashboard_tools',
-    version='0.0.1',
-    zip_safe=False,
+    install_requires=REQUIREMENTS,
+    # extras_require={
+    #     ':python_version >= "3.6"': [
+    #         'PyQt5',
+    #     ]
+    # # extras_require={  # Optional
+    # #     'dev': ['check-manifest'],
+    # #     'test': ['coverage'],
+    # },
+
+    # If there are data files included in your packages that need to be
+    # installed, specify them here.
+    #
+    # If using Python 2.6 or earlier, then these have to be included in
+    # MANIFEST.in as well.
+    # package_data={  # Optional
+    #     'sample': ['package_data.dat'],
+    # },
+
+    # Although 'package_data' is the preferred approach, in some case you may
+    # need to place data files outside of your packages. See:
+    # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files
+    #
+    # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
+    # data_files=[('my_data', ['data/data_file'])],  # Optional
+
+    # To provide executable scripts, use entry points in preference to the
+    # "scripts" keyword. Entry points provide cross-platform support and allow
+    # `pip` to create the appropriate form of executable for the target
+    # platform.
+    #
+    # For example, the following would provide a command called `sample` which
+    # executes the function `main` from this package when invoked:
+    # entry_points={  # Optional
+    #     'console_scripts': [
+    #         'sample=sample:main',
+    #     ],
+    # },
+
+    # List additional URLs that are relevant to your project as a dict.
+    #
+    # This field corresponds to the "Project-URL" metadata fields:
+    # https://packaging.python.org/specifications/core-metadata/#project-url-multiple-use
+    #
+    # Examples listed include a pattern for specifying where the package tracks
+    # issues, where the source is hosted, where to say thanks to the package
+    # maintainers, and where to support the project financially. The key is
+    # what's used to render the link text on PyPI.
+    project_urls={  # Optional
+        'Bug Reports': 'https://github.com/jmp75/ipyleaflet-dashboard-tools/issues',
+        # 'Funding': 'https://donate.pypi.org',
+        # 'Say Thanks!': 'http://saythanks.io/to/example',
+        'Source': 'https://github.com/jmp75/ipyleaflet-dashboard-tools',
+    },
 )
