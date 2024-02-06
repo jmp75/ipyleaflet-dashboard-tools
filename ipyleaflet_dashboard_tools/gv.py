@@ -57,7 +57,7 @@ class GeoViewer:
         mean_lat = self.x_data[self.lat_key].values.mean()
         mean_lng = self.x_data[self.lon_key].values.mean()
         # create the map
-        m = Map(center=(mean_lat, mean_lng), zoom=4, basemap=basemaps.Stamen.Terrain)
+        m = Map(center=(mean_lat, mean_lng), zoom=4, basemap=basemaps.OpenTopoMap)
         m.layout.height = '1200px'
         # show trace
         markers = []
