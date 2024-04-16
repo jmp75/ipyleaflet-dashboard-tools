@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 # from ipyleaflet import basemaps, FullScreenControl, LayerGroup, Map, MeasureControl, Polyline, Marker, MarkerCluster, CircleMarker, WidgetControl
 # from ipywidgets import Button, HTML, HBox, VBox, Checkbox, FileUpload, Label, Output, IntSlider, Layout, Image, link
 from ipywidgets import Output, HTML
-from ipyleaflet import Map, Marker, MarkerCluster, basemaps
+from ipyleaflet import Map, Marker, MarkerCluster, basemaps, Icon
 
 # Had unexpected issues with displaying matplotlib in output widgets.
 # https://github.com/jupyter-widgets/ipywidgets/issues/1853#issuecomment-349201240 seems to do the job...
@@ -53,9 +53,13 @@ class GeoViewer:
             return message
         return f
 
-    def build_map(self, click_handler:Callable[[Dict[str,Any]], None]) -> Map:
+    def build_map(self, click_handler:Callable[[Dict[str,Any]], None], **kwargs) -> Map:
         mean_lat = self.x_data[self.lat_key].values.mean()
         mean_lng = self.x_data[self.lon_key].values.mean()
+        dargs = dict(**kwargs)
+        icon_factory = None
+        if 'icon_factory' in dargs:
+            icon_factory = dargs['icon_factory']
         # create the map
         m = Map(center=(mean_lat, mean_lng), zoom=4, basemap=basemaps.OpenTopoMap)
         m.layout.height = '1200px'
@@ -63,7 +67,11 @@ class GeoViewer:
         markers = []
         for k in self.marker_info:
             message = self.create_popup(k)
-            marker = Marker(location=k, draggable=False)
+            icon = icon_factory(k) if icon_factory is not None else None
+            # ipl.AwesomeIcon(
+            #     name="gauge", marker_color="orange", icon_color="white", spin=False
+            # )
+            marker = Marker(location=k, draggable=False, icon=icon)
             marker.on_click(click_handler)
             marker.popup = message
             markers.append(marker)
