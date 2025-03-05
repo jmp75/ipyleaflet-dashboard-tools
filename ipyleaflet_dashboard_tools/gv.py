@@ -1,16 +1,16 @@
+from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Tuple
-import xarray as xr
 
 import matplotlib.pyplot as plt
+import xarray as xr
+from ipyleaflet import Icon, Map, Marker, MarkerCluster, basemaps
 
 # from ipyleaflet import basemaps, FullScreenControl, LayerGroup, Map, MeasureControl, Polyline, Marker, MarkerCluster, CircleMarker, WidgetControl
-from ipywidgets import Output, HTML
-from ipyleaflet import Map, Marker, MarkerCluster, basemaps, Icon
+from ipywidgets import HTML, Output
 
 # Had unexpected issues with displaying matplotlib in output widgets.
 # https://github.com/jupyter-widgets/ipywidgets/issues/1853#issuecomment-349201240 seems to do the job...
 from ipywidgets.widgets.interaction import show_inline_matplotlib_plots
-from dataclasses import dataclass
 
 
 def default_html_popup_factory(identifier:str) -> HTML:
@@ -72,6 +72,10 @@ class GeoViewer:
         n = len(lats)
         for i in range(n):
             self.__add_marker_info(lats[i], lons[i], values_id[i])
+
+    def marker_info(self, identifier: str) -> MarkerInfo:
+        """Retrieve the marker information for a given identifier."""
+        return self.__marker_info.get(identifier, None)
 
     def __add_marker_info(self, lat: float, lon: float, ident: str):
         self.__marker_info[ident] = MarkerInfo(ident, lat, lon)
